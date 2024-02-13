@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tile034.png-f9d6ec836081b4cf4d9fa6d21e86f07e.stex"
+path="res://.import/GrassLeftBlock.png-f67d0a479978153a205f6391829b8ba1.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/tiles/tile034.png"
-dest_files=[ "res://.import/tile034.png-f9d6ec836081b4cf4d9fa6d21e86f07e.stex" ]
+source_file="res://GrassLeftBlock.png"
+dest_files=[ "res://.import/GrassLeftBlock.png-f67d0a479978153a205f6391829b8ba1.stex" ]
 
 [params]
 

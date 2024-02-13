@@ -1,21 +1,22 @@
 extends KinematicBody2D
 
-const ACCELERATION = 3000
-const MAX_SPEED = 18000
-const LIMIT_SPEED_Y = 1200
-const JUMP_HEIGHT = 36000
-const MIN_JUMP_HEIGHT = 12000
-const MAX_COYOTE_TIME = 6
-const JUMP_BUFFER_TIME = 10
-const WALL_JUMP_AMOUNT = 18000
-const WALL_JUMP_TIME = 10
-const WALL_SLIDE_FACTOR = 0.8
-const WALL_HORIZONTAL_TIME = 30
-const GRAVITY = 2100
-const DASH_SPEED = 36000
+export var ACCELERATION = 3000
+export var MAX_SPEED = 18000
+export var LIMIT_SPEED_Y = 1200
+export var JUMP_HEIGHT = 36000
+export var MIN_JUMP_HEIGHT = 12000
+export var MAX_COYOTE_TIME = 6
+export var JUMP_BUFFER_TIME = 10
+export var WALL_JUMP_AMOUNT = 18000
+export var WALL_JUMP_TIME = 10
+export var WALL_SLIDE_FACTOR = 0.8
+export var WALL_HORIZONTAL_TIME = 30
+export var GRAVITY = 2100
+export var DASH_SPEED = 36000
 
 
 var velocity = Vector2()
+var dash_velocity = Vector2()
 var axis = Vector2()
 
 var coyoteTimer = 0
@@ -33,18 +34,27 @@ var isDashing = false
 var hasDashed = false
 var isGrabbing = false
 
+var just_landed = false;
+
 
 func _physics_process(delta):
+	if !isDashing:
+		dash_velocity = Vector2.ZERO;
+	
 	if velocity.y <= LIMIT_SPEED_Y:
-		if !isDashing:
+		if !isDashing and not is_on_floor():
 			velocity.y += GRAVITY * delta
+	
+	if is_on_floor():
+		velocity.y = 0.1;
 
 	friction = false
 	
 	getInputAxis()
+	
 	dash(delta)
 	
-	wallSlide(delta)
+	#wallSlide(delta)
 
 	#basic vertical movement mechanics
 	if wallJumpTimer > WALL_JUMP_TIME:
@@ -63,9 +73,22 @@ func _physics_process(delta):
 
 	#jumping mechanics and coyote time
 	if is_on_floor():
+		pass
+		#if velocity.x > 0.5 or velocity.x < -0.5:
+			#$Smoke.emitting = true;
+			#$Smoke.locked_position = global_position;
+			#$Smoke.locked_position.y += 20;
+		
+		if just_landed:
+			$Landing.emitting = true;
+			$Landing.locked_position = global_position;
+			$Landing.locked_position.y += 20;
+			just_landed = false;
 		canJump = true
 		coyoteTimer = 0
 	else:
+		just_landed = true;
+		$Smoke.emitting = false;
 		coyoteTimer += 1
 		if coyoteTimer > MAX_COYOTE_TIME:
 			canJump = false
@@ -75,6 +98,8 @@ func _physics_process(delta):
 	jumpBuffer(delta)
 
 	if Input.is_action_just_pressed("jump"):
+		just_landed = true;
+		#$AnimationPlayer2.play("squash")
 		if canJump:
 			jump(delta)
 			frictionOnAir()
@@ -87,7 +112,7 @@ func _physics_process(delta):
 	setJumpHeight(delta)
 	jumpBuffer(delta)
 
-	velocity = move_and_slide(velocity, Vector2.UP)
+	move_and_slide(velocity + dash_velocity, Vector2.UP)
 
 func jump(delta):
 	velocity.y = -JUMP_HEIGHT * delta
@@ -131,8 +156,8 @@ func jumpBuffer(delta):
 
 func setJumpHeight(delta):
 	if Input.is_action_just_released("ui_up"):
-		if velocity.y < -MIN_JUMP_HEIGHT * delta:
-			velocity.y = -MIN_JUMP_HEIGHT * delta
+		pass#if velocity.y < -MIN_JUMP_HEIGHT * delta:
+		#	velocity.y = -MIN_JUMP_HEIGHT * delta
 
 func horizontalMovement(delta):
 	if Input.is_action_pressed("ui_right"):
@@ -167,14 +192,22 @@ func horizontalMovement(delta):
 
 
 func dash(delta):
-	if !hasDashed:
-		if Input.is_action_just_pressed("dash"):
-			velocity = axis * DASH_SPEED * delta
-			spriteColor = "blue"
-			Input.start_joy_vibration(0, 1, 1, 0.2)
-			isDashing = true
-			hasDashed = true
-			$Camera/ShakeCamera2D.shake(0.5*axis.x, 0.5*axis.y)
+	if !is_on_floor():
+		if !hasDashed:
+			if Input.is_action_just_pressed("dash"):
+				# Get the horizontal and vertical axis values of the first joystick
+				var axis_v = Vector2(
+					Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"),
+					Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+				)
+				
+				dash_velocity = axis_v * DASH_SPEED * delta 
+				velocity.y = -1;
+				spriteColor = "blue"
+				#Input.start_joy_vibration(0, 1, 1, 0.2)
+				isDashing = true
+				hasDashed = true
+				$Camera/ShakeCamera2D.shake(0.6*axis_v.x, 0.6*axis_v.y)
 
 	if isDashing:
 		trail = true
@@ -183,6 +216,10 @@ func dash(delta):
 			isDashing = false
 			trail = false
 			dashTime = 0
+		if is_on_floor():
+			velocity.y = -DASH_SPEED*0.025;
+			dash_velocity.y = 0;
+			dash_velocity.x = dash_velocity.x*2
 
 	if is_on_floor() && velocity.y && dashTime == 0:
 		hasDashed = false
@@ -191,10 +228,13 @@ func dash(delta):
 func getInputAxis():
 	var new_x_axis = 0
 	new_x_axis = int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left"))
-	axis.y = int(Input.is_action_pressed("ui_down")) - int(Input.is_action_pressed("jump"))
+	var upwards = 0;
+	if int(Input.is_action_pressed("jump")) or int(Input.is_action_pressed("ui_up")):
+		upwards = 1;
+	axis.y = int(Input.is_action_pressed("ui_down")) - upwards;
 	if new_x_axis != 0:
 		axis.x = new_x_axis
-	if axis.y != 0 && new_x_axis == 0:
+	if axis.y != 0 && new_x_axis != 0:
 		axis.x = 0;
 	axis = axis.normalized()
 

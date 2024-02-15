@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/sprites/spot.png" type="Texture" id=1]
+[ext_resource path="res://rockbackgroundplant.png" type="Texture" id=2]
+
+[node name="LampPlant" type="Sprite"]
+position = Vector2( 202, 136 )
+texture = ExtResource( 2 )
+
+[node name="Light2D" type="Light2D" parent="."]
+position = Vector2( 1, 33 )
+texture = ExtResource( 1 )
+color = Color( 0.803922, 0.576471, 0.219608, 1 )
+energy = 0.72

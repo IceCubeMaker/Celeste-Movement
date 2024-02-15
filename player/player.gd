@@ -14,6 +14,7 @@ export var WALL_HORIZONTAL_TIME = 30
 export var GRAVITY = 2100
 export var DASH_SPEED = 36000
 
+var item = null;
 
 var velocity = Vector2()
 var dash_velocity = Vector2()

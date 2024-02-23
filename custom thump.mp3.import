@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/custom thump.mp3-cbfd186de74d9861204a900cf44232e7.mp3str"
+
+[deps]
+
+source_file="res://custom thump.mp3"
+dest_files=[ "res://.import/custom thump.mp3-cbfd186de74d9861204a900cf44232e7.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

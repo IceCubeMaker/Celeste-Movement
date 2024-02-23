@@ -82,6 +82,7 @@ func _physics_process(delta):
 		
 		if just_landed:
 			$Landing.emitting = true;
+			$AudioStreamPlayer.play();
 			$Landing.locked_position = global_position;
 			$Landing.locked_position.y += 20;
 			just_landed = false;

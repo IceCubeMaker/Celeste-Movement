@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/uplifting-logo-piano-152057.mp3-9ac23b9d378ac24a96af99fac9fe995a.mp3str"
+
+[deps]
+
+source_file="res://uplifting-logo-piano-152057.mp3"
+dest_files=[ "res://.import/uplifting-logo-piano-152057.mp3-9ac23b9d378ac24a96af99fac9fe995a.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

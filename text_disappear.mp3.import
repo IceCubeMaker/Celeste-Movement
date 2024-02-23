@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/text_disappear.mp3-2d5315f687583bf8eba433d8f90b72b6.mp3str"
+
+[deps]
+
+source_file="res://text_disappear.mp3"
+dest_files=[ "res://.import/text_disappear.mp3-2d5315f687583bf8eba433d8f90b72b6.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

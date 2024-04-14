@@ -30,6 +30,7 @@ func _on_Area2D_body_entered(body):
 
 func disappear():
 	$Key/AnimationPlayer.play("disappear")
+	following.item = null;
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):

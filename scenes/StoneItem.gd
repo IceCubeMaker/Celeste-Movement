@@ -4,6 +4,7 @@ extends Node2D
 var following = null;
 var offset = Vector2(-40, 0)
 onready var locked_position = global_position;
+var puzzle_solved = false;
 
 export var _name = "";
 export var _sprite : Texture;
@@ -18,7 +19,7 @@ func _ready():
 func _process(delta):
 	if following:
 		if following.item == self:
-			global_position += (following.global_position - global_position + offset)/50;
+			global_position += (following.global_position - global_position + offset)/40;
 			
 			if following.name == "player":
 				if following.get_node("Rotatable").scale.x == -1:
@@ -33,7 +34,7 @@ func _process(delta):
 
 
 func _on_Area2D_body_entered(body):
-	if body.name == "player" and following == null:
+	if body.name == "player" and following == null and !puzzle_solved:
 		following = body
 		body.item = self;
 

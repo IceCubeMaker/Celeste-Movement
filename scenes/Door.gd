@@ -12,7 +12,8 @@ func _on_Area2D_body_entered(body):
 		if body.item:
 			if is_instance_valid(body.item):
 				if body.item.is_in_group("key"):
-					body.item.disappear();
-					$AnimatedSprite.playing = true;
-					body.item.following = self;
 					item = body.item;
+					body.item.following = self;
+					body.item.disappear();
+					body.item = null;
+					$AnimatedSprite.playing = true;
